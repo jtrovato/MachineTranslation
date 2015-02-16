@@ -44,7 +44,7 @@ for french_sentence in french:
   # Hence all hypotheses in stacks[i] represent translations of 
   # the first i words of the input sentence. You should generalize
   # this so that they can represent translations of *any* i words.
-  for p, french_sentence_p in enumerate(reorder(french_sentence, 0)):
+  for french_sentence_p in reorder(french_sentence, 0):
     # create named tuple so its easier to deal with the values we are working on
     hypothesis = namedtuple("hypothesis", "logprob, lm_state, predecessor, phrase")
     initial_hypothesis = hypothesis(0.0, lm.begin(), None, None)
