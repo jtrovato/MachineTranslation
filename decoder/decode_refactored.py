@@ -52,7 +52,7 @@ for french_sentence in french:
   perms = reorder(french_sentence, 0)
   lp = len(perms)
   for french_sentence_p in perms:
-    sys.stderr.write(" %i/%i " % (count_p,lp)
+    sys.stderr.write(" %i/%i " % (count_p,lp))
 
     # create named tuple so its easier to deal with the values we are working on
     hypothesis = namedtuple("hypothesis", "logprob, lm_state, predecessor, phrase")
