@@ -24,6 +24,7 @@ def extract_english(h):
   return "" if h.predecessor is None else "%s%s " % (extract_english(h.predecessor), h.phrase.english)
 
 def reorder(sent, limit):
+  sys.stderr.write("reordering")
   #find all permutations of input sentence
   perms = list(itertools.permutations(sent))
   #prune the elements that are outside of the reordering limit
@@ -38,15 +39,21 @@ for word in set(sum(french,())):
 
 sys.stderr.write("Decoding %s...\n" % (opts.input,))
 count = 0
+lf = len(french)
 for french_sentence in french:
   count += 1
-  sys.stderr.write("%i/%i sentences \n" % (count,len(french)))
+  sys.stderr.write("%i/%i sentences \n" % (count,lf))
   # The following code implements a monotone decoding
   # algorithm (one that doesn't permute the target phrases).
   # Hence all hypotheses in stacks[i] represent translations of 
   # the first i words of the input sentence. You should generalize
   # this so that they can represent translations of *any* i words.
-  for french_sentence_p in reorder(french_sentence, 0):
+  count_p = 0
+  perms = reorder(french_sentence, 0)
+  lp = len(perms)
+  for french_sentence_p in perms:
+    sys.stderr.write(" %i/%i " % (count_p,lp)
+
     # create named tuple so its easier to deal with the values we are working on
     hypothesis = namedtuple("hypothesis", "logprob, lm_state, predecessor, phrase")
     initial_hypothesis = hypothesis(0.0, lm.begin(), None, None)
