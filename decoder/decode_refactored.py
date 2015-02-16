@@ -40,7 +40,7 @@ sys.stderr.write("Decoding %s...\n" % (opts.input,))
 count = 0
 for french_sentence in french:
   count += 1
-  sys.stderr.write("%/% \n" % (count,len(french)))
+  sys.stderr.write("%i/%i sentences \n" % (count,len(french)))
   # The following code implements a monotone decoding
   # algorithm (one that doesn't permute the target phrases).
   # Hence all hypotheses in stacks[i] represent translations of 
