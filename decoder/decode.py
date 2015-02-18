@@ -72,21 +72,21 @@ for french_sentence in french:
     for current_hypothesis in sorted(stack.itervalues(),key=lambda h: -h.logprob)[:opts.s]: # prune
         # loop over each word within the current range, that is (current-pos+1 -> length+1)
         current_bitvector = current_hypothesis.bitvector
-        sys.stderr.write('current bv' + str(current_bitvector) + str(current_hypothesis.logprob) + str(current_hypothesis.lm_state) + '\n')
+        #sys.stderr.write('current bv' + str(current_bitvector) + str(current_hypothesis.logprob) + str(current_hypothesis.lm_state) + '\n')
         
-        for j in xrange(i+1, len(french_sentence)+1:
+        for j in xrange(i+1, len(french_sentence)+1):
           
           perms = special_perm(french_sentence[i:j], min(len(french_sentence[i:j]), 4), current_bitvector)
           #perms = (french_sentence[i:j],)
           for perm in perms:
             # if the current range of words exists in our translation model
             if perm in tm:
-              sys.stderr.write(str(french_sentence[i:j]))
+              #sys.stderr.write(str(french_sentence[i:j]))
 
               new_bitvector = current_bitvector[:]
               for foriegn_word in perm:
                   new_bitvector[french_sentence.index(foriegn_word)] = 1 #may have issues with repeat words in a sentence
-              sys.stderr.write( '-----' + str(new_bitvector)+'\n')
+              #sys.stderr.write( '-----' + str(new_bitvector)+'\n')
               # not really looping over phrases here in the k=1 case, this line is akin to phrase = tm[french_sentence[i:j]]
               for phrase in tm[perm]:
                 #sys.stderr.write('\t' + str(phrase) )
@@ -110,8 +110,9 @@ for french_sentence in french:
                 new_hypothesis = hypothesis(new_logprob, new_lm_state, current_hypothesis, phrase, new_bitvector)
 
                 # add it to the current stack for the state if that state's stack is empty, or if the log prob is lower
-                if new_lm_state not in stacks[j] or stacks[j][new_lm_state].logprob < new_logprob: # second case is recombination
-                  stacks[j][new_lm_state] = new_hypothesis 
+                ind = sum(new_bitvector)
+                if new_lm_state not in stacks[ind] or stacks[ind][new_lm_state].logprob < new_logprob: # second case is recombination
+                  stacks[ind][new_lm_state] = new_hypothesis 
       
   winner = max(stacks[-1].itervalues(), key=lambda h: h.logprob)
   print extract_english(winner)
