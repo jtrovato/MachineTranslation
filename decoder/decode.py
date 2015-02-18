@@ -74,9 +74,9 @@ for french_sentence in french:
         current_bitvector = current_hypothesis.bitvector
         sys.stderr.write('current bv' + str(current_bitvector) + str(current_hypothesis.logprob) + str(current_hypothesis.lm_state) + '\n')
         
-        for j in xrange(i+1,min(i+8, len(french_sentence)+1)):
+        for j in xrange(i+1, len(french_sentence)+1:
           
-          perms = special_perm(french_sentence[i:j], len(french_sentence[i:j]), current_bitvector)
+          perms = special_perm(french_sentence[i:j], min(len(french_sentence[i:j]), 4), current_bitvector)
           #perms = (french_sentence[i:j],)
           for perm in perms:
             # if the current range of words exists in our translation model
