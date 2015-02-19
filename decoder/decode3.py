@@ -16,14 +16,18 @@ optparser.add_option("-s", "--stack-size", dest="s", default=1, type="int", help
 optparser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False,  help="Verbose mode (default=off)")
 opts = optparser.parse_args()[0]
 
+def extract_english(h): 
+  return "" if h.predecessor is None else "%s%s " % (extract_english(h.predecessor), h.phrase.english)
+
 #function for reordering penalty
 def reorder_penalty(starti, endi):
-  alpha = 0.8
+  alpha = 0.9
   return math.log10(alpha**(starti-endi-1))
 
 #find phrases out of the words that have not yet been translated
 def possible_phrases(sent, bv):
   phrases = []
+  phrase_inds = []
   inds = range(len(sent))
   for i, bit in enumerate(bv):
     if bit == 1:
@@ -33,8 +37,7 @@ def possible_phrases(sent, bv):
         break
       phrases.append(sent[i:j+1])
       phrase_inds.append(tuple(inds[i:j+1]))
-  return phrases, inds
-
+  return phrases, phrase_inds
 #build LM and TM
 tm = models.TM(opts.tm, opts.k)
 lm = models.LM(opts.lm)
@@ -65,36 +68,39 @@ for french_sentence in french:
     for current_hypothesis in sorted(stack.itervalues(),key=lambda h: -h.logprob)[:opts.s]: # prune
       # extract the current state of the language model
       current_bitvector = current_hypothesis.bitvector[:]
-      for j in xrange(i+1,len( french_sentence )+1):
-        if  french_sentence[i:j] in tm:
-          #generate new bv for the new hypothesis
+      #for j in xrange(i+1,len( french_sentence )+1):
+      phrases, phrase_inds = possible_phrases(french_sentence, current_bitvector)
+      for k, french_phrase in enumerate(phrases):
+
+        if  french_phrase in tm:
+          cur_phrase_inds = phrase_inds[k]
+          #generate new bv for the new hypothesis (mark all of the french words in the phrase as translated)
           new_bitvector = current_bitvector[:] #pass by value
-          for foriegn_word in french_sentence[i:j]:
-            new_bitvector[french_sentence.index(foriegn_word)] = 1 #may have issues with repeat words in a sentence
+          for bit in cur_phrase_inds:
+            new_bitvector[bit] = 1 #may have issues with repeat words in a sentence
           #compute index of last word in phrase for new hypothesis
-          new_phrase_end = j-1
+          new_phrase_end = cur_phrase_inds[-1]
           # just need the lm state for the new hypothesis
           current_lm_state = current_hypothesis.lm_state[:]
           #need start ind for penaly calculation
-          new_start = i
+          new_start = cur_phrase_inds[0]
           #caluclate reorder penalty
           penalty = reorder_penalty(new_start, current_hypothesis.phrase_end)
-          #sys.stderr.write(str(penalty)+'\n')
-          for phrase in tm[french_sentence[i:j]]: #for each possible translation make a new hypothesis
-            logprob = current_hypothesis.logprob + phrase.logprob + penalty
+          sys.stderr.write(str(french_phrase) + '   ' + str(penalty)+'\n')
+          for english_phrase in tm[french_phrase]: #for each possible translation make a new hypothesis
+            logprob = current_hypothesis.logprob + english_phrase.logprob + penalty
             lm_state = current_hypothesis.lm_state
-            for word in phrase.english.split():
+            for word in english_phrase.english.split():
               (lm_state, word_logprob) = lm.score(lm_state, word)
               logprob += word_logprob
-            logprob += lm.end(lm_state) if j == len(french_sentence) else 0.0
-            new_hypothesis = hypothesis(logprob, lm_state, current_hypothesis, phrase, new_bitvector, new_phrase_end)
-            if lm_state not in stacks[j] or stacks[j][lm_state].logprob < logprob: # second case is recombination
-              stacks[j][lm_state] = new_hypothesis 
+            logprob += lm.end(lm_state) if sum(new_bitvector) == len(french_sentence)+1 else 0.0
+            new_hypothesis = hypothesis(logprob, lm_state, current_hypothesis, english_phrase, new_bitvector, new_phrase_end)
+            stack_ind = sum(new_bitvector)
+            sys.stderr.write(str(new_bitvector)+ '\n')
+            if lm_state not in stacks[stack_ind] or stacks[stack_ind][lm_state].logprob < logprob: # second case is recombination
+              stacks[stack_ind][lm_state] = new_hypothesis 
   winner = max(stacks[-1].itervalues(), key=lambda h: h.logprob)
-
-
-  def extract_english(h): 
-    return "" if h.predecessor is None else "%s%s " % (extract_english(h.predecessor), h.phrase.english)
+  sys.stderr.write(extract_english(winner) + '\n')
   print extract_english(winner)
 
   if opts.verbose:
