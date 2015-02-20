@@ -55,17 +55,24 @@ def possible_phrases(sent, bv, i):
   '''
 
 def compute_future_cost(sent, bv):
-  cur = ()
-  sent_cost = 0
-  num_words = 0
-  for i in xrange(len(sent)):
+  start  = 0
+  end = 0
+  cur_cost = 0.0
+  i=0
+  while i < len(sent):
     if bv[i] == 0:
-      cur += (sent[i],)
-    else:
-      if num_words >= 1:
-        sent_cost += cost[(cur[0], cur[-1])]
-      cur = ()
-      num_words = 0
+      start = i
+      while i<len(sent) and bv[i] == 0:
+        i += 1
+        end = i
+        #sys.stderr.write('**********************' + str(end))
+        
+      cur_cost += cost[(start, end)]
+    i += 1
+  return cur_cost
+
+
+
   return sent_cost
 
 #build LM and TM
@@ -110,12 +117,12 @@ for french_sentence in french:
           cost[start, end] = cost[start,i] + cost[i,end]
  
 
-  hypothesis = namedtuple("hypothesis", "logprob, lm_state, predecessor, phrase, bitvector, phrase_end, future_cost")
-  initial_hypothesis = hypothesis(0.0, lm.begin(), None, None, [0]*len(french_sentence), -1, 0.0)
+  hypothesis = namedtuple("hypothesis", "logprob, lm_state, predecessor, phrase, bitvector, phrase_end, future_cost, penalty")
+  initial_hypothesis = hypothesis(0.0, lm.begin(), None, None, [0]*len(french_sentence), -1, 0.0, 0)
   stacks = [{} for _ in  french_sentence ] + [{}]
   stacks[0][lm.begin()] = initial_hypothesis
   for i, stack in enumerate(stacks[:-1]):
-    for current_hypothesis in sorted(stack.itervalues(),key=lambda h: -h.logprob + h.future_cost)[:opts.s]: # prune
+    for current_hypothesis in sorted(stack.itervalues(),key=lambda h: -h.logprob - h.future_cost)[:opts.s]: # prune
       # extract the current state of the language model
       current_bitvector = current_hypothesis.bitvector[:]
       #for j in xrange(i+1,len( french_sentence )+1):
@@ -123,6 +130,7 @@ for french_sentence in french:
       for k, french_phrase in enumerate(phrases):
 
         if  french_phrase in tm:
+
           cur_phrase_inds = phrase_inds[k]
           #generate new bv for the new hypothesis (mark all of the french words in the phrase as translated)
           new_bitvector = current_bitvector[:] #pass by value
@@ -136,10 +144,12 @@ for french_sentence in french:
           new_start = cur_phrase_inds[0]
           #caluclate reorder penalty
           penalty = reorder_penalty(new_start, current_hypothesis.phrase_end)
+          #if penalty < -2:
+            #break
           # calculate future cost
           new_future_cost = compute_future_cost(french_phrase, new_bitvector)
 
-          #sys.stderr.write(str(french_phrase) + '   ' + str(penalty)+'\n')
+          #sys.stderr.write(str(french_phrase) + '   ' + str(logprob) + '    ' + str(penalty)+ '    ' + str(new_future_cost) + '\n')
           for english_phrase in tm[french_phrase]: #for each possible translation make a new hypothesis
             logprob = current_hypothesis.logprob + english_phrase.logprob
             lm_state = current_hypothesis.lm_state
@@ -147,7 +157,7 @@ for french_sentence in french:
               (lm_state, word_logprob) = lm.score(lm_state, word)
               logprob += word_logprob
             logprob += lm.end(lm_state) if sum(new_bitvector) == len(french_sentence)+1 else 0.0
-            new_hypothesis = hypothesis(logprob, lm_state, current_hypothesis, english_phrase, new_bitvector, new_phrase_end, new_future_cost)
+            new_hypothesis = hypothesis(logprob, lm_state, current_hypothesis, english_phrase, new_bitvector, new_phrase_end, new_future_cost, penalty)
             stack_ind = sum(new_bitvector)
             #sys.stderr.write(str(new_bitvector)+ '\n')
             if lm_state not in stacks[stack_ind] or stacks[stack_ind][lm_state].logprob < logprob: # second case is recombination
