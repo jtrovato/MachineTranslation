@@ -2,14 +2,24 @@
 import sys
 import argparse # optparse is deprecated
 from itertools import islice # slicing for iterators
+from random import random
  
 def word_matches(h, ref):
     return sum(1 for w in h if w in ref)
 
+def draw_num():
+    n = random()
+    if n < .4:
+        return -1
+    elif n < .8:
+        return 1
+    else:
+        return 0
+
 def meteor_score(h, ref):
-    alpha = 0.5
+    alpha = 0.8
     beta = 0.8
-    gamma = 0.1
+    gamma = 0.0
     matched_unigrams = word_matches(h,ref);
     intersection =  list(set(h) & set(ref));# this could be losing information for repeated unigrams
     precision = len(intersection)/float(len(h))
@@ -17,6 +27,8 @@ def meteor_score(h, ref):
 
     #chunking
     num_chunks = 0
+
+    '''
     for i in xrange(len(h)):
         for j in xrange(len(ref)):
             if h[i] == ref[j]:
@@ -29,7 +41,7 @@ def meteor_score(h, ref):
                         i = i+k-1
                         break
             num_chunks += 1
-
+    '''
     if len(intersection) == 0:
         #sys.stderr.write('len i ' + str(len(intersection)) + '\n')
 
@@ -39,7 +51,7 @@ def meteor_score(h, ref):
         #sys.stderr.write('precision ' + str(precision) + '\n')
 
 
-        return (1-gamma*(num_chunks/float(matched_unigrams))**beta)*((precision*recall)/float(((1-alpha)*recall + precision)))
+        return (1-gamma*(num_chunks/float(matched_unigrams))**beta)*((precision*recall)/float(((1-alpha)*recall + alpha*precision)))
  
 def main():
     parser = argparse.ArgumentParser(description='Evaluate translation hypotheses.')
@@ -67,9 +79,13 @@ def main():
         score1 = meteor_score(h1, ref)
         score2 = meteor_score(h2, ref)
 
-        print(1 if score1 > score2 else # \begin{cases}
-                (1 if score1 == score2
-                    else -1)) # \end{cases}
+
+        if score1 > score2:
+            print 1
+        elif score1 < score2:
+            print -1
+        else:
+            print -1
  
 # convention to allow import of this file as a module
 if __name__ == '__main__':
