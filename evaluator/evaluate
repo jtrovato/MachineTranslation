@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 import sys
 import argparse # optparse is deprecated
-from itertools import islice # slicing for iterators
+from itertools import islice, izip # slicing for iterators
 from random import random
+from nltk.corpus import wordnet
+from time import time
+from collections import defaultdict
+
  
 def word_matches(h, ref):
     return sum(1 for w in h if w in ref)
@@ -25,6 +29,18 @@ def meteor_score(h, ref):
     precision = len(intersection)/float(len(h))
     recall = len(intersection)/float(len(ref))
 
+    #check if all words are english
+    english_list =  open("/usr/share/dict/words").read().split()
+    english_dict = defaultdict(str)
+    for word in english_list:
+        english_dict[word] = True
+
+    for word in h:
+        if word in english_dict:
+            reduction = 0.01
+        else:
+            reduction = 1
+    
     #chunking
     num_chunks = 0
 
@@ -51,7 +67,7 @@ def meteor_score(h, ref):
         #sys.stderr.write('precision ' + str(precision) + '\n')
 
 
-        return (1-gamma*(num_chunks/float(matched_unigrams))**beta)*((precision*recall)/float(((1-alpha)*recall + alpha*precision)))
+        return reduction*(1-gamma*(num_chunks/float(matched_unigrams))**beta)*((precision*recall)/float(((1-alpha)*recall + alpha*precision)))
  
 def main():
     parser = argparse.ArgumentParser(description='Evaluate translation hypotheses.')
@@ -70,9 +86,12 @@ def main():
  
     # note: the -n option does not work in the original code
     i = 0
+    tot_sent = 51100
+    start_time = time()
     for h1, h2, ref in islice(sentences(), opts.num_sentences):
         i += 1
-        sys.stderr.write('sentence ' + str(i) + '\n')
+        tr = ((time()-start_time)/i)*(tot_sent-i);
+        sys.stderr.write("\r sentence %i  time remaining: %i" % (i,tr))
         rset = set(ref)
         #score1 = word_matches(h1, rset)
         #score2 = word_matches(h2, rset)
