@@ -7,9 +7,24 @@ from nltk.corpus import wordnet
 from time import time
 from collections import defaultdict
 
+#create my english dictionary (global variable)
+english_list =  open("/usr/share/dict/words").read().split()
+english_dict = defaultdict(str)
+for word in english_list:
+    english_dict[word] = True
  
 def word_matches(h, ref):
-    return sum(1 for w in h if w in ref)
+    matches = sum(1 for w in h if w in ref)
+    misfits = [w for w in h if w not in ref]
+    added = 0
+    for word in misfits:
+        try:
+            added = sum(1 for ss in wordnet.synsets(word) if str(ss.lemma_names()[0]) in ref)
+        except (UnicodeDecodeError, IOError):
+            pass
+
+    return max(len(h), matches+added)
+
 
 def draw_num():
     n = random()
@@ -21,7 +36,7 @@ def draw_num():
         return 0
 
 def meteor_score(h, ref):
-    alpha = 0.8
+    alpha = 0.7
     beta = 0.8
     gamma = 0.0
     matched_unigrams = word_matches(h,ref);
@@ -30,20 +45,14 @@ def meteor_score(h, ref):
     recall = len(intersection)/float(len(ref))
 
     #check if all words are english
-    english_list =  open("/usr/share/dict/words").read().split()
-    english_dict = defaultdict(str)
-    for word in english_list:
-        english_dict[word] = True
-
     for word in h:
         if word in english_dict:
-            reduction = 0.01
+            reduction = 0.9
         else:
             reduction = 1
     
     #chunking
     num_chunks = 0
-
     '''
     for i in xrange(len(h)):
         for j in xrange(len(ref)):
@@ -88,6 +97,9 @@ def main():
     i = 0
     tot_sent = 51100
     start_time = time()
+
+
+
     for h1, h2, ref in islice(sentences(), opts.num_sentences):
         i += 1
         tr = ((time()-start_time)/i)*(tot_sent-i);
