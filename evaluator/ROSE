@@ -1,0 +1,152 @@
+#!/usr/bin/env python
+import sys
+import argparse # optparse is deprecated
+from itertools import islice, izip # slicing for iterators
+from random import random
+from nltk.util import ngrams
+from nltk.corpus import stopwords
+from time import time
+from collections import defaultdict
+import numpy as np
+import string
+from sklearn import svm, datasets
+
+#globals
+punctuation = set(string.punctuation)
+stpwrds = set(stopwords.words('english'))
+
+
+def feat_gen(h, ref):
+    eps = 0.000000000001
+    bundle = []
+    for n in xrange(1,5):
+        hgrams = ngrams(h, n)
+        refgrams = ngrams(ref, n)
+        intersection =  list(set(hgrams) & set(refgrams))# this could be losing information for repeated unigrams
+        precision = len(intersection)/float(len(h))
+        recall = len(intersection)/float(len(ref))
+        f1 = 2*(precision*recall)/max((precision+recall), eps)
+        bundle += [precision, recall, f1]
+
+
+    count = (len(h)-len(ref))/len(ref)
+    avg_prec = np.mean(precision)
+    hpunct = sum(1 for w in h if w in punctuation)
+    refpunct = sum(1 for w in ref if w in punctuation)
+    punct = (hpunct-refpunct)/max(refpunct, eps)
+    hfun = sum(1 for w in h if w in stpwrds)
+    reffun= sum(1 for w in ref if w in stpwrds)
+    fun = (hfun-reffun)/max(reffun, eps)
+    hcontext = len(h) - hpunct - hfun
+    refcontext = len(ref) - refpunct - reffun
+    context = (hcontext-refcontext)/max(refcontext, eps)
+    count_vec = [count, avg_prec, fun, punct, context]
+
+    return bundle + count_vec
+
+def main():
+    eps = 0.000000000001
+    parser = argparse.ArgumentParser(description='Evaluate translation hypotheses.')
+    parser.add_argument('-i', '--input', default='data/hyp1-hyp2-ref',
+            help='input file (default data/hyp1-hyp2-ref)')
+    parser.add_argument('-n', '--num_sentences', default=None, type=int,
+            help='Number of hypothesis pairs to evaluate')
+    # note that if x == [1, 2, 3], then x[:None] == x[:] == x (copy); no need for sys.maxint
+    opts = parser.parse_args()
+ 
+    # we create a generator and avoid loading all sentences into a list
+    def sentences():
+        with open(opts.input) as f:
+            for pair in f:
+                yield [sentence.strip().split() for sentence in pair.split(' ||| ')]
+ 
+    #get data
+    filePath = "data/dev.answers"
+    file = open(filePath, 'r')
+    answers = np.loadtxt(file).T
+    n = len(answers)
+    d = 17
+    Y = np.zeros((2*n,))
+
+    #build the features from the sentences
+    i = 0
+    j = 0
+    sys.stderr.write('Generating Features\n')
+    for h1, h2, ref in islice(sentences(), n):
+        sys.stderr.write("\r sentence %i " % i)
+        X = np.zeros((2*n,17)) #initialize traing data matrix
+        #choose correct setence for training
+        if answers[j] == -1:
+            h = h2
+            other_h = h1
+            X[i,:] = np.array(feat_gen(h, ref))
+            Y[i] = 2
+            i+=1
+            X[i,:] = np.array(feat_gen(other_h,ref))
+            Y[i] = 0
+            i+=1
+
+        elif answers[j] == 1:
+            h = h1
+            other_h = h2
+            X[i,:] = np.array(feat_gen(h, ref))
+            Y[i] = 2
+            i+=1
+            X[i,:] = np.array(feat_gen(other_h,ref))
+            Y[i] = 0
+            i+=1
+        '''
+        else: 
+            h = h1
+            other_h = h2
+            X[i,:] = feat_gen(h, ref)
+            Y[i] = 1
+            i+=1
+            X[i,:] = feat_gen(other_h,ref)
+            Y[i] = 1
+            i+=1
+        '''
+        j+=1
+    X = X[:i,:]
+    Y = Y[:i]
+
+
+    #train the calssifier
+
+    #standardize the data
+    mean = np.mean(X)
+    std = np.std(X)
+    X = (X-mean)/std
+
+    sys.stderr.write('\nTraining the Classifier\n')
+    C=1000
+    clf = svm.SVC(C=C,kernel='linear', probability = True)
+    clf.fit(X, Y)
+
+    #test the classifier
+    sys.stderr.write('Predicting\n')
+    i=0
+    for h1, h2, ref in islice(sentences(), opts.num_sentences):
+        x1 = feat_gen(h1, ref)
+        x1 = (x1 - mean)/std
+        x2 = feat_gen(h2, ref)
+        x2 = (x2 - mean)/std
+        pred1 = clf.predict(x1)
+        pred2 = clf.predict(x2)
+
+        probs1 = clf.predict_proba(x1)
+        probs2 = clf.predict_proba(x2)
+        if probs1[0] > probs1[1] and probs2[0] < probs2[1]:
+            print -1
+        elif probs1[0] < probs1[1] and probs2[0] > probs2[1]:
+            print 1
+        else:
+            print 0
+        i+=1
+        sys.stderr.write("\r sentence %i, pred1: %i, pred2: %i " % (i, pred1, pred2))
+
+
+
+# convention to allow import of this file as a module
+if __name__ == '__main__':
+    main()

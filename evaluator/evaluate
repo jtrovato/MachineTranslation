@@ -3,7 +3,7 @@ import sys
 import argparse # optparse is deprecated
 from itertools import islice, izip # slicing for iterators
 from random import random
-from nltk.corpus import wordnet
+from nltk.corpus import wordnet, stopwords
 from time import time
 from collections import defaultdict
 
