@@ -6,17 +6,17 @@ import numpy as np
 
 optparser = optparse.OptionParser()
 optparser.add_option("-k", "--kbest-list", dest="input", default="data/dev+test.100best", help="100-best translation lists")
-optparser.add_option("-l", "--lm", dest="lm", default=-.5, type="float", help="Language model weight")
-optparser.add_option("-t", "--tm1", dest="tm1", default=-.5, type="float", help="Translation model p(e|f) weight")
-optparser.add_option("-s", "--tm2", dest="tm2", default=-.5, type="float", help="Lexical translation model p_lex(f|e) weight")
+optparser.add_option("-l", "--lm", dest="lm", default=--13.59375, type="float", help="Language model weight")
+optparser.add_option("-t", "--tm1", dest="tm1", default=-9.28125, type="float", help="Translation model p(e|f) weight")
+optparser.add_option("-s", "--tm2", dest="tm2", default=-4.96875, type="float", help="Lexical translation model p_lex(f|e) weight")
 (opts, _) = optparser.parse_args()
+
 weights = {'p(e)'       : float(opts.lm) ,
            'p(e|f)'     : float(opts.tm1),
-           'p_lex(f|e)' : float(opts.tm2)}
+           'p_lex(f|e)' : float(opts.tm2),
+           'len'        : 15.09375}
 
-ref_file = "data/dev.ref"
 all_hyps = [pair.split(' ||| ') for pair in open(opts.input)]
-ref_sents = [line.strip() for line in open(ref_file)]
 num_sents = len(all_hyps) / 100
 for s in xrange(0, num_sents):
   #ref = ref_sents[s]
@@ -27,6 +27,8 @@ for s in xrange(0, num_sents):
     for feat in feats.split(' '):
       (k, v) = feat.split('=')
       score += weights[k] * float(v)
+    sent_len = len(hyp.split())
+    score += weights['len']*float(sent_len)
     if score > best_score:
       (best_score, best) = (score, hyp)
   try: 

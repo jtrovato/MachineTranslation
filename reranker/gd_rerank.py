@@ -28,6 +28,8 @@ def predict(all_hyps, weights):
       for i,feat in enumerate(feats.split(' ')):
         (k, v) = feat.split('=')
         score += weights[i] * float(v)
+      sent_len = len(hyp.split())
+      score += weights[3]*float(sent_len)
       if score > best_score:
         (best_score, best) = (score, hyp)
     preds.append(best.strip().split())
@@ -36,31 +38,34 @@ def predict(all_hyps, weights):
   return preds
 
 optparser = optparse.OptionParser()
-optparser.add_option("-k", "--kbest-list", dest="input", default="data/dev+test.100best", help="100-best translation lists")
+optparser.add_option("-k", "--kbest-list", dest="input", default="data/train.100best", help="100-best translation lists")
 optparser.add_option("-l", "--lm", dest="lm", default=-1.0, type="float", help="Language model weight")
 optparser.add_option("-t", "--tm1", dest="tm1", default=-0.5, type="float", help="Translation model p(e|f) weight")
 optparser.add_option("-s", "--tm2", dest="tm2", default=-0.5, type="float", help="Lexical translation model p_lex(f|e) weight")
 (opts, _) = optparser.parse_args()
 weights = {'p(e)'       : float(opts.lm) ,
            'p(e|f)'     : float(opts.tm1),
-           'p_lex(f|e)' : float(opts.tm2)}
+           'p_lex(f|e)' : float(opts.tm2),
+           'len'        : 0.5}
 
-
-ref_file = "data/dev.ref"
+print 'Initializing\n'
+ref_file = "data/train.ref"
 ref = [line.strip().split() for line in open(ref_file)]
 all_hyps = [pair.split(' ||| ') for pair in open(opts.input)]
 
 delta = 1e-4
 
-d = 3
+d = 4
 #start_points = itertools.product([-2,0,2], repeat=d)
 
-w = [-2.0, -2.0, -2.0]
+w = [0,0,0,0]
 prev_score = -1e10
 eps = 1e-8
-alpha = 3
-prev_w = [100,100,100]
+alpha = 2
+prev_w = [100,100,100,100]
 diff = 1 #arbitrary first value
+
+print 'Gradient Descent\n'
 while diff > delta:
   #calculate new weights directions
   w_off = itertools.product([-alpha, 0, alpha], repeat = d) #cartesian product
