@@ -6,11 +6,12 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from pandas import DataFrame
 import numpy as np
+from nltk.corpus import stopwords
 import string
 
 optparser = optparse.OptionParser()
 optparser.add_option("-d", "--dictionary", dest="dictionary", default="data-train/dict.es", help="Dictionary data")
-optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.19, type=float, help="Default coverage cutoff")
+optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.17, type=float, help="Default coverage cutoff")
 optparser.add_option("-p", "--penalty", dest="penalty", default=0.5, type=float, help="Distance penalty")
 optparser.add_option("-e", "--english", dest="input_eng", default="data-train/orig.enu.snt", help="Input english wiki")
 optparser.add_option("-s", "--spanish", dest="input_esn", default="data-train/orig.esn.snt", help="Input spanish wiki")
@@ -22,7 +23,7 @@ optparser.add_option("-R", "--training-reference", dest="train_ref", default="da
 optparser.add_option("-r", "--PROPER_W", dest="PROPER_W", default=2.3, type="float", help="Proper Noun Weight (default=10.0)")
 optparser.add_option("-w", "--windowsize", dest="win_size", default=400, type="int", help="Window size")
 optparser.add_option("-l", "--stoplist", dest="stop_file", default="stopwords.txt", help="List of stop words")
-optparser.add_option("-k", "--length_ratio", dest="length_ratio", default=1.2, type="float",help="ratio of len(spanish) to len(english)")
+optparser.add_option("-k", "--length_ratio", dest="length_ratio", default=0.83, type="float",help="ratio of len(spanish) to len(english)")
 
 
 
@@ -44,8 +45,8 @@ def read_pages ( filename ):
             line_number += 1
 
 #create stopwords
-#stopwords = set(stopwords.words('english'))
-stopwords = set([word.strip() for word in open(opts.stop_file)])
+stopwords = set(stopwords.words('spanish'))
+#stopwords = set([word.strip() for word in open(opts.stop_file)])
 punct = string.punctuation
 for p in punct:
     stopwords.add(p)
@@ -54,8 +55,19 @@ for p in additions:
     stopwords.add(p)
 
 # extract the dictionary from its file source
-dictionary = dict((record.split()[0], set(record.split()[1:])) for record in open(opts.dictionary))
-#inv_map = {v: k for k, v in map.items()}
+dict_se = dict((record.split('\t')[0], set(record.split('\t')[1:])) for record in open(opts.dictionary))
+dict_es = {}
+for (sp, elist) in dict_se.items():
+    for en in elist:
+        if en in dict_es and dict_es[en] is not None:
+            if en == 'the':
+                print sp
+            dict_es[en] += [sp,]
+        else:
+            dict_es[en] = [sp,]
+
+dictionary = dict_es
+
 # extract all of the document pairs from their file input
 document_pairs = [(de, ds) for (de, ds) in zip(read_pages(opts.input_eng), read_pages(opts.input_esn))]
 
@@ -70,8 +82,8 @@ hist_const = 1
 PROPER_W = opts.PROPER_W
 konstant_length_ratio = opts.length_ratio
 for (english, spanish) in document_pairs:
-    (title_e, document_e) = english
-    (title_s, document_s) = spanish
+    (title_e, document_e) = spanish
+    (title_s, document_s) = english
     for (e_list, eindex) in document_e:
         best_score = 0
         best_s = ""
@@ -91,8 +103,10 @@ for (english, spanish) in document_pairs:
                 count_same = 0
                 for s_word in s:
                     translated = False
+                    #print s_word.lower()
                     if s_word.lower() in dictionary:
                         translations = dictionary[s_word.lower()]
+                        #print translations
                         for k, e_word in enumerate(e_list):
                             if e_word.lower() in translations and not translated and e_bit_vec[k] == 0 and e_word not in stopwords:
                                 translated = True
@@ -114,5 +128,5 @@ for (english, spanish) in document_pairs:
                     best_score = score
         # if the best score for this sentence is above our cutoff (and something was found), output the sentence as an aligned sentence pair
         if best_score >= opts.cutoff and best_s_ind != None:
-            print "\t".join([title_s,title_e, str(best_s_ind -1), str(eindex-1)])                    
+            print "\t".join([title_e,title_s, str(eindex -1), str(best_s_ind-1)])                    
         
