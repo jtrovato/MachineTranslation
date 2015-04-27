@@ -4,7 +4,7 @@ import math
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from pandas import DataFrame
+#from pandas import DataFrame
 import numpy as np
 import string
 
