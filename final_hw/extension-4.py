@@ -10,7 +10,7 @@ import string
 
 optparser = optparse.OptionParser()
 optparser.add_option("-d", "--dictionary", dest="dictionary", default="data-train/dict.es", help="Dictionary data")
-optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.2, type=float, help="Default coverage cutoff")
+optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.19, type=float, help="Default coverage cutoff")
 optparser.add_option("-p", "--penalty", dest="penalty", default=0.5, type=float, help="Distance penalty")
 optparser.add_option("-e", "--english", dest="input_eng", default="data-train/orig.enu.snt", help="Input english wiki")
 optparser.add_option("-s", "--spanish", dest="input_esn", default="data-train/orig.esn.snt", help="Input spanish wiki")
@@ -19,10 +19,10 @@ optparser.add_option("-E", "--training-english", dest="train_eng", default="data
 optparser.add_option("-S", "--training-spanish", dest="train_esn", default="data-dev/pairs-train.esn.snt", help="Training spanish wiki")
 optparser.add_option("-R", "--training-reference", dest="train_ref", default="data-dev/pairs-train.label", help="Training reference labels")
 #my additions
-optparser.add_option("-r", "--PROPER_W", dest="PROPER_W", default=3.0, type="float", help="Proper Noun Weight (default=10.0)")
+optparser.add_option("-r", "--PROPER_W", dest="PROPER_W", default=2.3, type="float", help="Proper Noun Weight (default=10.0)")
 optparser.add_option("-w", "--windowsize", dest="win_size", default=400, type="int", help="Window size")
 optparser.add_option("-l", "--stoplist", dest="stop_file", default="stopwords.txt", help="List of stop words")
-optparser.add_option("-k", "--length_ratio", dest="length_ratio", default=1.18, type="float",help="ratio of len(spanish) to len(english)")
+optparser.add_option("-k", "--length_ratio", dest="length_ratio", default=1.2, type="float",help="ratio of len(spanish) to len(english)")
 
 
 
@@ -55,7 +55,7 @@ for p in additions:
 
 # extract the dictionary from its file source
 dictionary = dict((record.split()[0], set(record.split()[1:])) for record in open(opts.dictionary))
-
+#inv_map = {v: k for k, v in map.items()}
 # extract all of the document pairs from their file input
 document_pairs = [(de, ds) for (de, ds) in zip(read_pages(opts.input_eng), read_pages(opts.input_esn))]
 
