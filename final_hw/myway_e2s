@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+import optparse
+import math
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+#from pandas import DataFrame
+import numpy as np
+from nltk.corpus import stopwords
+import string
+
+optparser = optparse.OptionParser()
+optparser.add_option("-d", "--dictionary", dest="dictionary", default="data-train/dict.es", help="Dictionary data")
+optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.17, type=float, help="Default coverage cutoff")
+optparser.add_option("-p", "--penalty", dest="penalty", default=0.5, type=float, help="Distance penalty")
+optparser.add_option("-e", "--english", dest="input_eng", default="data-train/orig.enu.snt", help="Input english wiki")
+optparser.add_option("-s", "--spanish", dest="input_esn", default="data-train/orig.esn.snt", help="Input spanish wiki")
+
+optparser.add_option("-E", "--training-english", dest="train_eng", default="data-dev/pairs-train.enu.snt", help="Training english wiki")
+optparser.add_option("-S", "--training-spanish", dest="train_esn", default="data-dev/pairs-train.esn.snt", help="Training spanish wiki")
+optparser.add_option("-R", "--training-reference", dest="train_ref", default="data-dev/pairs-train.label", help="Training reference labels")
+#my additions
+optparser.add_option("-r", "--PROPER_W", dest="PROPER_W", default=2.3, type="float", help="Proper Noun Weight (default=10.0)")
+optparser.add_option("-w", "--windowsize", dest="win_size", default=400, type="int", help="Window size")
+optparser.add_option("-l", "--stoplist", dest="stop_file", default="stopwords.txt", help="List of stop words")
+optparser.add_option("-k", "--length_ratio", dest="length_ratio", default=0.83, type="float",help="ratio of len(spanish) to len(english)")
+
+
+
+(opts, _) = optparser.parse_args()
+
+# helper function to read in the documnent pairs from their original file source
+def read_pages ( filename ):
+    with open(filename,'r') as f:
+        document = []
+        line_number = 0
+        for line in f:
+            if len(line.strip()) == 0:
+                yield (" ".join(document[0][0]), document[1:])
+                line_number = 0
+                document = []
+                continue
+            else:
+                document.append((line.strip().split(), line_number))
+            line_number += 1
+
+#create stopwords
+stopwords = set(stopwords.words('spanish'))
+#stopwords = set([word.strip() for word in open(opts.stop_file)])
+punct = string.punctuation
+for p in punct:
+    stopwords.add(p)
+additions = ['-LRB-', '-RRB-', '\'\'', '``', '...']
+for p in additions:
+    stopwords.add(p)
+
+# extract the dictionary from its file source
+dict_se = dict((record.split('\t')[0], set(record.split('\t')[1:])) for record in open(opts.dictionary))
+dict_es = {}
+for (sp, elist) in dict_se.items():
+    for en in elist:
+        if en in dict_es and dict_es[en] is not None:
+            if en == 'the':
+                print sp
+            dict_es[en] += [sp,]
+        else:
+            dict_es[en] = [sp,]
+
+dictionary = dict_es
+
+# extract all of the document pairs from their file input
+document_pairs = [(de, ds) for (de, ds) in zip(read_pages(opts.input_eng), read_pages(opts.input_esn))]
+
+# extract all of the training pairs from their file input
+training_pairs = [(te.strip(), ts.strip(), tr.strip().split('\t')) for (te, ts, tr) in zip((line_e for line_e in open(opts.train_eng)),(line_s for line_s in open(opts.train_esn)),(line_ref for line_ref in open(opts.train_ref)))]
+
+
+#mathcing
+e_hist = [] #mathcing history variables to consider previous matches as an idication of future performance
+s_hist = []
+hist_const = 1
+PROPER_W = opts.PROPER_W
+konstant_length_ratio = opts.length_ratio
+for (english, spanish) in document_pairs:
+    (title_e, document_e) = spanish
+    (title_s, document_s) = english
+    for (e_list, eindex) in document_e:
+        best_score = 0
+        best_s = ""
+        e_len = len(e_list)
+        e_bit_vec = [0]*e_len
+        start = max(0, eindex - opts.win_size)
+        end = min(len(document_s), eindex + opts.win_size)
+        aligned = False
+        for (s, sindex) in document_s:
+            lenSpan_to_lenEng = float(len(s))/e_len #length ratio
+            lengthDiffFromTarget = abs(konstant_length_ratio - lenSpan_to_lenEng)
+            count_overlap = 0
+            count_same = 0
+
+            if sindex not in s_hist:
+                count_overlap = 0
+                count_same = 0
+                for s_word in s:
+                    translated = False
+                    #print s_word.lower()
+                    if s_word.lower() in dictionary:
+                        translations = dictionary[s_word.lower()]
+                        #print translations
+                        for k, e_word in enumerate(e_list):
+                            if e_word.lower() in translations and not translated and e_bit_vec[k] == 0 and e_word not in stopwords:
+                                translated = True
+                                e_bit_vec[k] = 1
+                                count_overlap = count_overlap + 1
+                    else:
+                         for k, word in enumerate(e_list):
+                            if not e_bit_vec[k] and word == s_word and not translated and word not in stopwords:
+                                #sys.stderr.write(word + '   ' + s_word + '\n')
+                                count_same += 1
+                                translated = True
+                                e_bit_vec[k] = 1
+                score = hist_const*((count_overlap+PROPER_W*count_same) / e_len)
+                score *= (1-lengthDiffFromTarget)
+                #append each sentence if above thresh
+                if score > best_score:
+                    best_s = s
+                    best_s_ind = sindex
+                    best_score = score
+        # if the best score for this sentence is above our cutoff (and something was found), output the sentence as an aligned sentence pair
+        if best_score >= opts.cutoff and best_s_ind != None:
+            print "\t".join([title_e,title_s, str(eindex -1), str(best_s_ind-1)])                    
+        
