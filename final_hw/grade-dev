@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+import optparse
+import sys
+from collections import defaultdict
+
+optparser = optparse.OptionParser()
+optparser.add_option("-r", "--reference", dest="reference", default="data-dev/pairs-train.label", help="Test Set")
+(opts, args) = optparser.parse_args()
+
+# extract the reference sentences into arrays and get the total count
+reference_sentences = [line.strip().split("\t") for line in open(opts.reference, "r")]
+reference_count = len(reference_sentences)
+
+# create a mapping between the english title and sentence index to its corresponding 
+# spanish title and index in the reference data
+reference_map = defaultdict(list)
+for spanish_title, english_title, spanish_index, english_index in reference_sentences:
+    reference_map[(spanish_title, spanish_index)].append((english_title, english_index))
+
+true_positive_count = 0
+false_positive_count = 0
+
+for line in sys.stdin: # avoid pipe error
+    spanish_title, english_title, spanish_index, english_index = line.strip().split("\t")
+    if reference_map.has_key((spanish_title, spanish_index)):
+        # since one sentence can potentially map to any, we need to check if any sentence we point to is a match
+        matches = [x for x in reference_map[(spanish_title, spanish_index)] if x == (english_title, english_index)]
+        if len(matches) > 0:
+            true_positive_count += 1
+        else:
+            false_positive_count += 1
+    else:
+        false_positive_count += 1
+        
+# calculate the false negatives by taking the number of reference items and subtracting 
+# the true positive count that we obtained from the input data
+false_negative_count = float(reference_count - true_positive_count)
+
+# calculate precision, recall, f-score using usual calculation
+precision_denominator = (true_positive_count + float(false_positive_count))
+precision = true_positive_count / precision_denominator if precision_denominator != 0 else 0
+recall_denominator = (false_negative_count + true_positive_count)
+recall = true_positive_count /recall_denominator if recall_denominator != 0 else 0
+f_score_denominator = (precision + recall)
+f_score = 2 * (precision * recall) / f_score_denominator if f_score_denominator != 0 else 0
+sys.stdout.write("Precision = %f\nRecall = %f\nF-score = %f\n" % (precision, recall, f_score))
+
+    

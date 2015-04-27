@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+import optparse
+import math
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from pandas import DataFrame
+import numpy as np
+
+optparser = optparse.OptionParser()
+optparser.add_option("-d", "--dictionary", dest="dictionary", default="data-train/dict.es", help="Dictionary data")
+optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.5, type=float, help="Default coverage cutoff")
+optparser.add_option("-p", "--penalty", dest="penalty", default=0.5, type=float, help="Distance penalty")
+optparser.add_option("-e", "--english", dest="input_eng", default="data-train/orig.enu.snt", help="Input english wiki")
+optparser.add_option("-s", "--spanish", dest="input_esn", default="data-train/orig.esn.snt", help="Input spanish wiki")
+
+optparser.add_option("-E", "--training-english", dest="train_eng", default="data-dev/pairs-train.enu.snt", help="Training english wiki")
+optparser.add_option("-S", "--training-spanish", dest="train_esn", default="data-dev/pairs-train.esn.snt", help="Training spanish wiki")
+optparser.add_option("-R", "--training-reference", dest="train_ref", default="data-dev/pairs-train.label", help="Training reference labels")
+(opts, _) = optparser.parse_args()
+
+# helper function to read in the documnent pairs from their original file source
+def read_pages ( filename ):
+    with open(filename,'r') as f:
+        document = []
+        line_number = 0
+        for line in f:
+            if len(line.strip()) == 0:
+                yield (" ".join(document[0][0]), document[1:])
+                line_number = 0
+                document = []
+                continue
+            else:
+                document.append((line.strip().split(), line_number))
+            line_number += 1
+
+# extract the dictionary from its file source
+dictionary = dict((record.split()[0], set(record.split()[1:])) for record in open(opts.dictionary))
+
+# extract all of the document pairs from their file input
+document_pairs = [(de, ds) for (de, ds) in zip(read_pages(opts.input_eng), read_pages(opts.input_esn))]
+
+# extract all of the training pairs from their file input
+training_pairs = [(te.strip(), ts.strip(), tr.strip().split('\t')) for (te, ts, tr) in zip((line_e for line_e in open(opts.train_eng)),(line_s for line_s in open(opts.train_esn)),(line_ref for line_ref in open(opts.train_ref)))]
+
+# for any training pair, get the features associated with it
+def get_features(training_pair, polarity = 1):
+    english, spanish, answer = training_pair
+    split_spanish = spanish.split()
+    split_english = english.split()
+
+
+    
+    # TODO Add additional features here
+    spanish_length = len(split_spanish)
+    english_length = len(split_english)
+    
+    return {
+                'length_spanish': [spanish_length], 
+                'length_english': [english_length], 
+                'class': [polarity]
+           }
+
+# setup our pipeline and base dataframe to store the training data
+pipeline = Pipeline([('classifier', LogisticRegression()) ])
+data_frame = DataFrame({'length_spanish': [], 'length_english': [], 'class': []})
+
+df_index = 0
+for training_pair in training_pairs:
+    # add each positive training pair to our DataFrame for use as training data in our classifier
+    example = DataFrame(get_features(training_pair), index=[df_index])
+    df_index += 1
+    data_frame = data_frame.append(example)
+    
+    # kludge to add some negative training data, so that the model isn't 100% positive entries
+    # this could be a lot better
+    df_index += 1
+    data_frame = data_frame.append(DataFrame({'length_spanish': [0], 'length_english': [0], 'class': [0]}, index=[df_index]))
+
+# transform our training data and train our model
+pipeline.fit(np.asarray(zip(data_frame['length_spanish'], data_frame['length_english'])), np.asarray(data_frame['class']))
+
+# For each matching document, we try to align sentences
+for (english, spanish) in document_pairs:
+    (title_e, document_e) = english
+    (title_s, document_s) = spanish
+    for (split_spanish, index_s) in document_s:
+        best, best_score = None, 0.0
+        for (split_english, index_e) in document_e:
+            # reconstruct the features and get the probabilities for the positive and negative class (1 and 0)
+            features = get_features((" ".join(split_english), " ".join(split_spanish), (title_e, title_s, index_e, index_s)))
+            labels = pipeline.predict_proba([features[a][0] for a in ['length_spanish', 'length_english']])
+            
+            # compute our raw score, positive_prob - negative_prob
+            score = labels[0][1] - labels[0][0]
+            
+            # update our best score tracker for this source sentence
+            if best_score < score:
+                best = index_e
+                best_score = score
+        
+        # if the best score for this sentence is above our cutoff (and something was found), output the sentence as an aligned sentence pair
+        if best_score >= opts.cutoff and best != None:
+            print "\t".join([title_s,title_e, str(index_s - 1), str(best - 1)])                    
+            

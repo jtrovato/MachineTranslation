@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+import optparse
+import sys
+import math
+
+# Default implementation based on dictionary matches
+
+optparser = optparse.OptionParser()
+optparser.add_option("-d", "--dictionary", dest="dictionary", default="data-train/dict.es", help="Dictionary data")
+optparser.add_option("-c", "--cutoff", dest="cutoff", default=0.6, type=float, help="Default coverage cutoff")
+optparser.add_option("-p", "--penalty", dest="penalty", default=0.96, type=float, help="Distance penalty")
+optparser.add_option("-e", "--english", dest="input_eng", default="data-train/orig.enu.snt", help="Input english wiki")
+optparser.add_option("-s", "--spanish", dest="input_esn", default="data-train/orig.esn.snt", help="Input spanish wiki")
+
+(opts, _) = optparser.parse_args()
+def read_pages ( fn ):
+  with open(fn,'r') as f:
+    document = []
+    line_number = 0
+    for line in f:
+      if len(line.strip()) == 0:
+        yield (" ".join(document[0][0]), document[1:])
+        line_number = 0
+        document = []
+        continue
+      else:
+        document.append((line.strip().split(), line_number))
+      line_number += 1
+
+dictionary = dict((record.split()[0], set(record.split()[1:])) for record in open(opts.dictionary))
+document_pairs = [(de, ds) for (de, ds) in zip(read_pages(opts.input_eng), read_pages(opts.input_esn))]
+
+
+# For each matching document, we try to align sentences
+for (english, spanish) in document_pairs:
+  (title_e, document_e) = english
+  (title_s, document_s) = spanish
+  for (s, index_s) in document_s:
+    best, best_coverage, best_coverage_wp = None, -1.0, -1.0
+    for (e, index_e) in document_e:
+      # Score the sentence pairs based on number of matching words
+      s_en = set(record for word in s if word.lower() in dictionary for record in dictionary[word.lower()])
+      coverage = (sum(1.0 for word in e if word.lower() in s_en) / len(e))
+      # Penalized score is in log form
+      coverage_penalty = (math.log(coverage) if coverage > 0 else -float('inf')) + math.log(opts.penalty) * abs(index_e - index_s)
+      if coverage_penalty > best_coverage_wp:
+        best = index_e
+        best_coverage = coverage
+        best_coverage_wp = coverage_penalty
+    #sys.stderr.write("Best coverage: %f\n" % best_coverage);
+    if best_coverage >= opts.cutoff:
+      print "\t".join([title_s,title_e, str(index_s - 1), str(best - 1)])          
+      

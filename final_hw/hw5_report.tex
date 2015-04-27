@@ -1,0 +1,64 @@
+% CIS526 Machine Translation - Project 5 - Parallel Sentence Matching HW
+
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{placeins}
+
+\definecolor{lightgray}{gray}{0.5}
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{0} %turn off section numbering
+\begin{document}
+
+\title{CIS526 Homework 5: Parallel Sentence Matching}
+\author{Joe Trovato}
+\date{\today}
+\maketitle
+\setlength{\parindent}{10ex}
+
+\section{Motivation}
+\par
+
+\section{Algorithm}
+
+\section{Results}
+\par
+
+
+
+\begin{table}[!h]
+\caption{Accuracy of Evaluation}
+\begin{center}
+
+\begin{tabular}{|c|c|c|}
+	\hline
+	Evaluation Method & Approximate Accuracy Score \\
+	\hline
+	Word Counts (default code) & 0.44 \\
+	\hline
+	METEOR without chunking & 0.46 \\
+	\hline
+	METEOR without chunking, tuned parameters & 0.48 \\
+	\hline
+	METEOR with chunking, tuned parameters & 0.50 \\
+	\hline
+	METEOR with chunking and dictionary lookup & 0.51\\
+	\hline
+	METEOR with chunking, dictionary lookup, and no ties & 0.52\\
+	\hline
+	ROSE without POS features & 0.41 \\
+	\hline
+	ROSE without POS features, without ties & 0.21 \\
+	\hline
+\end{tabular}
+\end{center}
+
+\end{table}
+	
+
+
+
+\end{document}
