@@ -1,0 +1,290 @@
+Andorra	Andorra	29	5
+Andorra	Andorra	112	80
+Andorra	Andorra	113	81
+Andorra	Andorra	15	91
+Andorra	Andorra	177	108
+Andorra	Andorra	334	112
+Andorra	Andorra	28	122
+Andorra	Andorra	341	123
+Andorra	Andorra	339	124
+Andorra	Andorra	345	125
+Animals (álbum)	Animals (album)	0	0
+Animals (álbum)	Animals (album)	18	30
+Animals (álbum)	Animals (album)	0	42
+Animals (álbum)	Animals (album)	25	49
+Animals (álbum)	Animals (album)	27	52
+Animals (álbum)	Animals (album)	28	53
+Animals (álbum)	Animals (album)	27	59
+Animals (álbum)	Animals (album)	27	61
+Animals (álbum)	Animals (album)	28	69
+Animals (álbum)	Animals (album)	27	71
+Animals (álbum)	Animals (album)	28	73
+Animals (álbum)	Animals (album)	35	79
+Animals (álbum)	Animals (album)	10	81
+Animals (álbum)	Animals (album)	51	82
+Animals (álbum)	Animals (album)	46	84
+Animals (álbum)	Animals (album)	49	85
+Animals (álbum)	Animals (album)	50	86
+Animals (álbum)	Animals (album)	54	90
+Kirk Haston	Kirk Haston	0	0
+Kirk Haston	Kirk Haston	4	1
+Kirk Haston	Kirk Haston	11	10
+Kirk Haston	Kirk Haston	13	13
+Kirk Haston	Kirk Haston	17	15
+Antipartícula	Antiparticle	11	19
+Antipartícula	Antiparticle	13	21
+Antipartícula	Antiparticle	16	24
+Antipartícula	Antiparticle	17	25
+Antipartícula	Antiparticle	20	28
+Antipartícula	Antiparticle	21	29
+Antipartícula	Antiparticle	22	30
+Antipartícula	Antiparticle	25	33
+Antipartícula	Antiparticle	28	36
+Antipartícula	Antiparticle	31	40
+Antipartícula	Antiparticle	32	41
+Antipartícula	Antiparticle	33	42
+Antipartícula	Antiparticle	51	59
+Antipartícula	Antiparticle	52	60
+Antipartícula	Antiparticle	53	61
+Antipartícula	Antiparticle	54	62
+Antipartícula	Antiparticle	62	66
+Antipartícula	Antiparticle	64	68
+Antipartícula	Antiparticle	66	70
+Antipartícula	Antiparticle	19	71
+Antipartícula	Antiparticle	68	72
+Antipartícula	Antiparticle	76	78
+Antipartícula	Antiparticle	91	90
+Antipartícula	Antiparticle	99	98
+Aldea	Hamlet (place)	0	0
+Aldea	Hamlet (place)	20	40
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	1	1
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	24	2
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	26	5
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	27	6
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	28	7
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	0	11
+Muchacha leyendo una carta	Girl reading a Letter at an Open Window	0	25
+Tahití	Tahiti	0	0
+Tahití	Tahiti	1	10
+Tahití	Tahiti	1	11
+Tahití	Tahiti	5	22
+Tahití	Tahiti	8	27
+Tahití	Tahiti	9	28
+Tahití	Tahiti	14	32
+Tahití	Tahiti	15	33
+Tahití	Tahiti	20	39
+Tahití	Tahiti	26	44
+Tahití	Tahiti	27	45
+Tahití	Tahiti	31	50
+Tahití	Tahiti	32	51
+Tahití	Tahiti	33	52
+Tahití	Tahiti	34	53
+Tahití	Tahiti	38	61
+Tahití	Tahiti	41	65
+Tahití	Tahiti	42	66
+Tahití	Tahiti	44	68
+Tahití	Tahiti	45	69
+Tahití	Tahiti	55	79
+Tahití	Tahiti	1	117
+Tahití	Tahiti	63	120
+Tahití	Tahiti	64	128
+Tahití	Tahiti	70	134
+Aesculus	Aesculus	1	4
+Aesculus	Aesculus	2	17
+Aesculus	Aesculus	35	32
+Aesculus	Aesculus	43	49
+Aesculus	Aesculus	44	50
+Aesculus	Aesculus	45	51
+Aesculus	Aesculus	47	53
+Aesculus	Aesculus	48	54
+Aesculus	Aesculus	49	55
+Aesculus	Aesculus	50	56
+Conjunto parcialmente ordenado	Partially ordered set	0	1
+Conjunto parcialmente ordenado	Partially ordered set	3	7
+Conjunto parcialmente ordenado	Partially ordered set	0	15
+Conjunto parcialmente ordenado	Partially ordered set	12	16
+Conjunto parcialmente ordenado	Partially ordered set	0	57
+Conjunto parcialmente ordenado	Partially ordered set	34	65
+Conjunto parcialmente ordenado	Partially ordered set	35	67
+Conjunto parcialmente ordenado	Partially ordered set	36	69
+Conjunto parcialmente ordenado	Partially ordered set	35	91
+Conjunto parcialmente ordenado	Partially ordered set	35	117
+Florete	Foil (fencing)	2	0
+Florete	Foil (fencing)	0	19
+Florete	Foil (fencing)	2	24
+Florete	Foil (fencing)	23	125
+Movimiento de Liberación de Sudán	Sudan Liberation Movement/Army	12	11
+Pietro Pomponazzi	Pietro Pomponazzi	0	0
+Pietro Pomponazzi	Pietro Pomponazzi	2	4
+Pietro Pomponazzi	Pietro Pomponazzi	2	6
+Louis-Michel Aury	Louis-Michel Aury	6	2
+Louis-Michel Aury	Louis-Michel Aury	13	8
+Louis-Michel Aury	Louis-Michel Aury	14	9
+Louis-Michel Aury	Louis-Michel Aury	15	11
+Louis-Michel Aury	Louis-Michel Aury	17	14
+Louis-Michel Aury	Louis-Michel Aury	18	15
+Louis-Michel Aury	Louis-Michel Aury	19	16
+Louis-Michel Aury	Louis-Michel Aury	21	18
+Louis-Michel Aury	Louis-Michel Aury	25	24
+Louis-Michel Aury	Louis-Michel Aury	21	29
+Louis-Michel Aury	Louis-Michel Aury	30	30
+Louis-Michel Aury	Louis-Michel Aury	0	31
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	0	0
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	2	1
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	3	2
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	5	3
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	0	5
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	10	8
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	12	10
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	16	15
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	24	18
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	25	22
+Constitución de la Unión Soviética de 1936	1936 Soviet Constitution	31	25
+1829	1829	58	0
+1829	1829	3	5
+1829	1829	7	6
+1829	1829	22	23
+1829	1829	46	36
+1829	1829	51	50
+1829	1829	52	51
+1829	1829	46	52
+1829	1829	19	58
+1829	1829	60	59
+1829	1829	61	60
+1829	1829	68	68
+Chevrolet Celebrity	Chevrolet Celebrity	42	9
+Chevrolet Celebrity	Chevrolet Celebrity	50	21
+Terrytoons	Terrytoons	1	1
+Terrytoons	Terrytoons	4	3
+Terrytoons	Terrytoons	5	4
+Terrytoons	Terrytoons	6	5
+Terrytoons	Terrytoons	6	6
+Terrytoons	Terrytoons	7	7
+Terrytoons	Terrytoons	8	8
+Terrytoons	Terrytoons	10	9
+Terrytoons	Terrytoons	11	10
+Terrytoons	Terrytoons	0	13
+Terrytoons	Terrytoons	15	15
+Terrytoons	Terrytoons	16	16
+Terrytoons	Terrytoons	0	18
+Terrytoons	Terrytoons	7	21
+Terrytoons	Terrytoons	0	24
+Terrytoons	Terrytoons	22	32
+Terrytoons	Terrytoons	23	33
+Terrytoons	Terrytoons	24	34
+Terrytoons	Terrytoons	27	37
+Terrytoons	Terrytoons	2	40
+Terrytoons	Terrytoons	23	41
+Terrytoons	Terrytoons	30	42
+Terrytoons	Terrytoons	1	43
+Terrytoons	Terrytoons	33	45
+Terrytoons	Terrytoons	37	50
+Terrytoons	Terrytoons	42	53
+Terrytoons	Terrytoons	3	73
+Terrytoons	Terrytoons	7	75
+Terrytoons	Terrytoons	46	78
+Nadja Uhl	Nadja Uhl	0	1
+Nadja Uhl	Nadja Uhl	1	2
+Nadja Uhl	Nadja Uhl	2	3
+Nadja Uhl	Nadja Uhl	3	4
+Nadja Uhl	Nadja Uhl	4	5
+Nadja Uhl	Nadja Uhl	5	6
+Nadja Uhl	Nadja Uhl	7	8
+Nadja Uhl	Nadja Uhl	8	9
+Nadja Uhl	Nadja Uhl	12	12
+Nadja Uhl	Nadja Uhl	14	13
+Nadja Uhl	Nadja Uhl	16	15
+Nadja Uhl	Nadja Uhl	17	16
+Nadja Uhl	Nadja Uhl	18	17
+Nadja Uhl	Nadja Uhl	19	18
+Nadja Uhl	Nadja Uhl	21	20
+Nadja Uhl	Nadja Uhl	22	21
+Nadja Uhl	Nadja Uhl	99	24
+Nadja Uhl	Nadja Uhl	100	25
+Nadja Uhl	Nadja Uhl	97	26
+Nadja Uhl	Nadja Uhl	98	27
+Nadja Uhl	Nadja Uhl	95	28
+Nadja Uhl	Nadja Uhl	46	29
+Nadja Uhl	Nadja Uhl	94	30
+Nadja Uhl	Nadja Uhl	92	31
+Nadja Uhl	Nadja Uhl	93	32
+Nadja Uhl	Nadja Uhl	90	33
+Nadja Uhl	Nadja Uhl	91	34
+Nadja Uhl	Nadja Uhl	88	35
+Nadja Uhl	Nadja Uhl	46	36
+Nadja Uhl	Nadja Uhl	86	37
+Nadja Uhl	Nadja Uhl	87	38
+Nadja Uhl	Nadja Uhl	85	39
+Nadja Uhl	Nadja Uhl	83	40
+Nadja Uhl	Nadja Uhl	84	41
+Nadja Uhl	Nadja Uhl	81	42
+Nadja Uhl	Nadja Uhl	82	43
+Nadja Uhl	Nadja Uhl	79	44
+Nadja Uhl	Nadja Uhl	80	45
+Nadja Uhl	Nadja Uhl	77	46
+Nadja Uhl	Nadja Uhl	78	47
+Nadja Uhl	Nadja Uhl	76	48
+Nadja Uhl	Nadja Uhl	72	49
+Nadja Uhl	Nadja Uhl	75	50
+Nadja Uhl	Nadja Uhl	72	51
+Nadja Uhl	Nadja Uhl	73	52
+Nadja Uhl	Nadja Uhl	71	53
+Nadja Uhl	Nadja Uhl	67	56
+Nadja Uhl	Nadja Uhl	68	57
+Nadja Uhl	Nadja Uhl	65	58
+Nadja Uhl	Nadja Uhl	66	59
+Nadja Uhl	Nadja Uhl	63	60
+Nadja Uhl	Nadja Uhl	64	61
+Nadja Uhl	Nadja Uhl	60	62
+Nadja Uhl	Nadja Uhl	61	63
+Nadja Uhl	Nadja Uhl	62	64
+Nadja Uhl	Nadja Uhl	58	65
+Nadja Uhl	Nadja Uhl	59	66
+Nadja Uhl	Nadja Uhl	54	69
+Nadja Uhl	Nadja Uhl	55	70
+Nadja Uhl	Nadja Uhl	52	71
+Nadja Uhl	Nadja Uhl	53	72
+Nadja Uhl	Nadja Uhl	50	73
+Nadja Uhl	Nadja Uhl	51	74
+Nadja Uhl	Nadja Uhl	49	76
+Nadja Uhl	Nadja Uhl	45	77
+Nadja Uhl	Nadja Uhl	46	78
+Nadja Uhl	Nadja Uhl	47	79
+Nadja Uhl	Nadja Uhl	43	80
+Nadja Uhl	Nadja Uhl	44	81
+Nadja Uhl	Nadja Uhl	39	84
+Nadja Uhl	Nadja Uhl	40	85
+Nadja Uhl	Nadja Uhl	37	86
+Nadja Uhl	Nadja Uhl	38	87
+Nadja Uhl	Nadja Uhl	35	88
+Nadja Uhl	Nadja Uhl	36	89
+Nadja Uhl	Nadja Uhl	31	92
+Nadja Uhl	Nadja Uhl	29	94
+Nadja Uhl	Nadja Uhl	30	95
+Nadja Uhl	Nadja Uhl	27	96
+Nadja Uhl	Nadja Uhl	28	97
+Nadja Uhl	Nadja Uhl	25	98
+Nadja Uhl	Nadja Uhl	26	99
+Nadja Uhl	Nadja Uhl	23	100
+Nadja Uhl	Nadja Uhl	24	101
+Nadja Uhl	Nadja Uhl	103	102
+Gueden	Gethen	1	5
+Gueden	Gethen	3	7
+Gueden	Gethen	4	8
+Gueden	Gethen	7	12
+Gueden	Gethen	10	17
+Gueden	Gethen	12	19
+Gueden	Gethen	13	20
+Gueden	Gethen	14	21
+Gueden	Gethen	21	28
+Gueden	Gethen	22	29
+Gueden	Gethen	23	30
+Gueden	Gethen	24	31
+Gueden	Gethen	26	34
+Gueden	Gethen	27	35
+Juan Calvino	John Calvin	1	2
+Juan Calvino	John Calvin	66	191
+Juan Calvino	John Calvin	66	195
+Juan Calvino	John Calvin	66	202
+Juan Calvino	John Calvin	51	405
+Juan Calvino	John Calvin	64	420

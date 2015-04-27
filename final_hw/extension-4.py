@@ -70,8 +70,8 @@ hist_const = 1
 PROPER_W = opts.PROPER_W
 konstant_length_ratio = opts.length_ratio
 for (english, spanish) in document_pairs:
-    (title_e, document_e) = spanish
-    (title_s, document_s) = english
+    (title_e, document_e) = english
+    (title_s, document_s) = spanish
     for (e_list, eindex) in document_e:
         best_score = 0
         best_s = ""
@@ -91,7 +91,7 @@ for (english, spanish) in document_pairs:
                 count_same = 0
                 for s_word in s:
                     translated = False
-                    if s_word.lower() in dictionary.keys():
+                    if s_word.lower() in dictionary:
                         translations = dictionary[s_word.lower()]
                         for k, e_word in enumerate(e_list):
                             if e_word.lower() in translations and not translated and e_bit_vec[k] == 0 and e_word not in stopwords:
