@@ -1,0 +1,13 @@
+Thai Presence on Twitter
+------------------------
+![Map of Thai speakers](http://upload.wikimedia.org/wikipedia/commons/8/8e/Idioma_tailand%C3%A9s.png)
+
+Thai is the 9th most popular language on Twitter, following English, Japanese, Spanish, Malay, Portuguese, Arabic, French, and Turkish (See the chart below). By using the Thai language map above we were able to form a pretty tight bounding box on the areas that speak Thai. We found that coordinates 99.44,12.54,102.49,17.38 gave the best results when scraping tweets from twitter. Over the course of about an hour we were able to collect over 700 tweets. These are labels with the location they were tweeted from, as well as exact coordinates. 
+
+![Most Popular Languages on Twitter](http://wersm.com/wp-content/uploads/2013/12/graphiti_2x860-730x894.png)
+
+Collecting the tweets was relatively straightforward. After downloading the correct modules to interface with the twitter API and to actually scrape the tweets, I then only needed to register as a twitter developer for access to the tweet stream. By making a simple shell script to set up my environment and specify the location, I was able to steam tweets directly to an output file. 
+
+After collecting a significant amount of tweets, I manually labelled them depending on if they contained thai language. This was slightly difficult do to having to identify different non-roman scripts. I found that with a tighter bounding box I was able to pull out a much higher percentage of Thai tweets. In the final sample, 92/100 tweets were written in Thai, 4 were written in English, and 4 were multilingual. With such a high precentage of Thai tweets, this could be a very useful source of monolingual data for Thai. I also found that twitter was a good source at recognizing patterns that are not found in other monolingual text sources. For instance, multiple 5s were in 7/100 tweets, afte some reasearch, we found that 5 is pronounced 'ha' in Thai and used for laughing when there are multiple 5s in a row. Pieces of language like this are not written about in any grammer book, so this is an extremely valuebale resource for understanding Thai vernacular and has potential to be a key component of Thai translation systems for colloquial language.
+
+The raw data is contained in streamer/thai_tweets.txt, the labeled data is contained in streamer/labeled_thai_tweets.txt, and the scripts used to run the scraper are in keysetup and streamer/cmd.

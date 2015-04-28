@@ -1,0 +1,2 @@
+simplejson
+tweepy>=2.1

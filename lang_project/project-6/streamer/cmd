@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python streamer.py -f=place.full_name,coordinates.coordinates,text --locations="99.44,12.54,102.49,17.38"
+

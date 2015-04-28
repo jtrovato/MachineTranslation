@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export CONSUMER_KEY="ZyTklUBOH2dh7t5MII0rljio9"
+export CONSUMER_SECRET="UeN85wiVClwMr9L65xVM4mDuqsygQHpMktKRVKvxa1uumdEpYm"
+export ACCESS_KEY="453641398-Bug3HzzyGk0XSeI8Z9ZbkjfPzANW6wfNvNnkDHyf"
+export ACCESS_SECRET="pl2xNvQCsa56kC4EQ5kOvEel2W41vMTaAZNP4vOFIIyYJ"
+
